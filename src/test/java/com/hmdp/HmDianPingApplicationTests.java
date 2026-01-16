@@ -5,6 +5,7 @@ import com.hmdp.service.impl.ShopServiceImpl;
 import com.hmdp.utils.CacheClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.Resource;
 
@@ -18,6 +19,8 @@ class HmdpApplicationTests {
     private CacheClient cacheClient;
     @Resource
     private ShopServiceImpl shopService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Test
     void testSaveShop() {
@@ -26,5 +29,13 @@ class HmdpApplicationTests {
         Shop shop = shopService.getById(1L);
         cacheClient.setWithLogicalExpire(CACHE_SHOP_KEY+1L,shop,10L, TimeUnit.SECONDS);
     }
+    // 在你的测试类中运行一次，进行数据预热
+    @Test
+    void prepareStock() {
+        // 务必确认这里的 Key 格式要和你业务代码 Lua 脚本里拼接的一模一样
+        // 常见格式是 "seckill:stock:" + id
+        stringRedisTemplate.opsForValue().set("seckill:stock:9", "200");
+    }
+
 }
 
