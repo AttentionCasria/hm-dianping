@@ -4,12 +4,12 @@ spring:
   application:
     name: hmdp
   datasource:
-    url: jdbc:mysql://192.168.43.198:3310/hmdp?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.161:3310/hmdp?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 123
     driver-class-name: com.mysql.cj.jdbc.Driver   # 一定要是 cj 版本！
   redis:
-    host: 192.168.43.198
+    host: 192.168.2.161
     port: 6379
     password: 123
     lettuce:
