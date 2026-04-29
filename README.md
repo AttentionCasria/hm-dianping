@@ -1,8 +1,3 @@
-基于提供的代码片段（`ShopController.java`）以及通常的项目结构推断，为您生成了一份 `README.md` 文档。
-
-这份文档包含了项目简介、技术栈、API 接口说明以及简单的启动指南。
-
-```markdown
 # HMDP (黑马点评) 后端工程
 
 这是一个基于 Java Spring Boot 开发的店铺点评与资讯系统后端项目。本项目主要用于管理店铺信息、提供商铺查询（包括基于地理位置的查询）等功能。
@@ -104,5 +99,3 @@ src/main/java/com/hmdp
 ## 📄 许可证
 
 [MIT License](LICENSE)
-```
-```
