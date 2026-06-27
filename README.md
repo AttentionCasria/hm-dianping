@@ -1,101 +1,303 @@
-# HMDP (黑马点评) 后端工程
+# 🚀 HMDP（黑马点评）后端项目
 
-这是一个基于 Java Spring Boot 开发的店铺点评与资讯系统后端项目。本项目主要用于管理店铺信息、提供商铺查询（包括基于地理位置的查询）等功能。
+> 基于 **Spring Boot + MyBatis Plus + Redis + MySQL** 构建的店铺点评与本地生活服务系统后端，实现了商铺管理、缓存优化、地理位置查询等核心功能。
 
-## 🛠 技术栈
+---
 
-本项目使用以下核心技术和框架：
+## ✨ 项目简介
 
-- **开发语言**: Java
-- **构建工具**: Maven
-- **核心框架**: Spring Boot
-- **ORM 框架**: MyBatis Plus
-- **数据库**: MySQL
-- **工具库**: Hutool (用于字符串处理等)
-- **其他**: Lombok (推测), Redis (推测，常见于此类项目缓存场景)
+HMDP（黑马点评）是一套面向本地生活服务场景的后端系统，提供商铺查询、店铺管理、分类检索、附近商铺查询等功能。
 
-## 📂 功能模块
+项目采用 **Spring Boot** 作为核心开发框架，结合 **MyBatis Plus** 完成数据持久化，并使用 **Redis** 实现缓存优化，为高并发场景提供良好的性能支持。
 
-目前主要展示店铺管理模块 (`ShopController`) 的相关功能：
+> 本仓库主要展示后端核心业务逻辑及 RESTful API 的实现。
 
-*   **店铺查询**: 支持根据 ID 查询店铺详情。
-*   **店铺搜索**: 支持根据店铺名称关键字进行模糊搜索（分页）。
-*   **分类查询**: 支持根据店铺类型查询列表。
-*   **地理位置**: 在查询店铺类型时，支持传入经纬度坐标 (`x`, `y`)，为基于地理位置的排序（附近商铺）预留了接口。
-*   **店铺管理**: 提供新增店铺和更新店铺信息的接口。
+---
 
-## 🔌 API 接口文档
+## 🏗️ 技术架构
 
-以下是店铺模块 (`src/main/java/com/hmdp/controller/ShopController.java`) 对外提供的 RESTful 接口：
+| 技术               | 说明              |
+| ---------------- | --------------- |
+| ☕ Java 8+        | 开发语言            |
+| 🌱 Spring Boot   | Web 开发框架        |
+| 🗄️ MyBatis Plus | ORM 持久层框架       |
+| 🐬 MySQL         | 数据存储            |
+| ⚡ Redis          | 缓存、地理位置查询       |
+| 🧰 Maven         | 项目构建工具          |
+| 📦 Hutool        | Java 工具类库       |
+| ✨ Lombok         | 简化 Java Bean 编写 |
 
-| HTTP 方法 | 接口路径 | 描述 | 参数说明 |
-| :--- | :--- | :--- | :--- |
-| **GET** | `/shop/{id}` | 根据 ID 查询商铺信息 | `id`: 商铺 ID |
-| **POST** | `/shop` | 新增商铺信息 | Body: `Shop` JSON 对象 |
-| **PUT** | `/shop` | 更新商铺信息 | Body: `Shop` JSON 对象 |
-| **GET** | `/shop/of/type` | 根据类型分页查询商铺 | `typeId`: 类型ID, `current`: 页码, `x`: 经度(可选), `y`: 纬度(可选) |
-| **GET** | `/shop/of/name` | 根据名称关键字查询商铺 | `name`: 关键字(可选), `current`: 页码(默认1) |
+---
 
-## 🚀 快速开始
+## 🌟 核心功能
 
-### 前置要求
+### 🏪 店铺管理
 
-*   JDK 1.8+
-*   Maven 3.x
-*   MySQL 5.7+
-*   IDE (IntelliJ IDEA 推荐)
+* ✅ 根据 ID 查询店铺详情
+* ✅ 新增店铺信息
+* ✅ 修改店铺信息
 
-### 安装步骤
+---
 
-1.  **克隆项目**
-    ```bash
-    git clone https://github.com/DarksideCasria/hmdp.git
+### 🔍 商铺搜索
+
+支持按照店铺名称进行模糊搜索，并支持分页查询。
+
+例如：
+
+```
+星巴克
+火锅
+奶茶
 ```
 
-2.  **导入数据库**
-    *   请确保本地 MySQL 服务已启动。
-    *   创建数据库 `hmdp` 并导入项目提供的 SQL 脚本（如果存在）。
+---
 
-3.  **配置数据库连接**
-    *   修改 `src/main/resources/application.yml` (或 `.properties`) 文件，更新数据库 URL、用户名和密码。
+### 📂 店铺分类
 
-4.  **编译与运行**
-    *   在项目根目录下运行 Maven 命令下载依赖：
-        ```bash
-        mvn clean install
-        ```
-    *   运行 Spring Boot 启动类。
+根据店铺分类分页查询商铺，例如：
 
-### 示例请求
+* 美食
+* 酒店
+* 娱乐
+* 健身
+* 景点
 
-**查询 ID 为 1 的店铺:**
+---
+
+### 📍 附近商铺（Geo 查询）
+
+支持传入经纬度坐标：
+
+* Longitude（x）
+* Latitude（y）
+
+实现按照距离排序查询附近商铺，为 Redis GEO 查询提供接口支持。
+
+---
+
+## 📑 RESTful API
+
+### 查询店铺
+
+```http
+GET /shop/{id}
+```
+
+| 参数 | 类型   | 描述   |
+| -- | ---- | ---- |
+| id | Long | 店铺ID |
+
+---
+
+### 新增店铺
+
+```http
+POST /shop
+```
+
+Body：
+
+```json
+{
+  "name":"海底捞",
+  "typeId":1
+}
+```
+
+---
+
+### 更新店铺
+
+```http
+PUT /shop
+```
+
+Body：
+
+```json
+{
+  "id":1,
+  "name":"新的店铺名称"
+}
+```
+
+---
+
+### 根据分类分页查询
+
+```http
+GET /shop/of/type
+```
+
+| 参数      | 必填 | 说明   |
+| ------- | -- | ---- |
+| typeId  | ✔  | 店铺类型 |
+| current | ✔  | 页码   |
+| x       | ✘  | 经度   |
+| y       | ✘  | 纬度   |
+
+---
+
+### 根据名称查询
+
+```http
+GET /shop/of/name
+```
+
+| 参数      | 默认值 | 说明      |
+| ------- | --- | ------- |
+| name    | -   | 店铺名称关键字 |
+| current | 1   | 当前页     |
+
+---
+
+## 📁 项目结构
+
+```text
+src
+└── main
+    └── java
+        └── com.hmdp
+            ├── config          # 配置类
+            ├── controller      # 控制器
+            ├── dto             # 数据传输对象
+            ├── entity          # 实体类
+            ├── mapper          # Mapper 接口
+            ├── service         # 业务层
+            ├── utils           # 工具类
+            └── HmdpApplication.java
+```
+
+---
+
+## ⚙️ 快速开始
+
+### 1️⃣ 克隆项目
+
+```bash
+git clone https://github.com/DarksideCasria/hmdp.git
+cd hmdp
+```
+
+---
+
+### 2️⃣ 创建数据库
+
+创建数据库：
+
+```sql
+CREATE DATABASE hmdp DEFAULT CHARSET utf8mb4;
+```
+
+然后导入项目提供的 SQL 文件。
+
+---
+
+### 3️⃣ 修改配置
+
+修改：
+
+```text
+src/main/resources/application.yml
+```
+
+配置：
+
+* MySQL
+* Redis
+* 端口（可选）
+
+例如：
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/hmdp
+    username: root
+    password: xxxx
+
+  redis:
+    host: localhost
+    port: 6379
+```
+
+---
+
+### 4️⃣ 启动项目
+
+安装依赖：
+
+```bash
+mvn clean install
+```
+
+运行：
+
+```bash
+mvn spring-boot:run
+```
+
+或者直接运行：
+
+```
+HmdpApplication.java
+```
+
+---
+
+## 📌 请求示例
+
+### 查询店铺
+
 ```http
 GET http://localhost:8080/shop/1
 ```
 
-**根据名称搜索店铺:**
+---
+
+### 名称搜索
+
 ```http
 GET http://localhost:8080/shop/of/name?name=星巴克&current=1
 ```
 
-## 📝 目录结构说明
+---
 
+### 分类查询
+
+```http
+GET http://localhost:8080/shop/of/type?typeId=2&current=1
 ```
-src/main/java/com/hmdp
-├── config       // 配置类
-├── controller   // 控制器层 (如 ShopController)
-├── dto          // 数据传输对象 (如 Result)
-├── entity       // 实体类 (如 Shop)
-├── mapper       // MyBatis Mapper 接口
-├── service      // 业务逻辑接口 (如 IShopService)
-├── utils        // 工具类 (如 SystemConstants)
-└── HmdpApplication.java // 启动类
-```
+
+---
+
+## 🚀 后续规划
+
+* [ ] Redis 缓存穿透
+* [ ] Redis 缓存击穿
+* [ ] Redis 缓存雪崩解决方案
+* [ ] Redis GEO 附近商铺
+* [ ] 点赞功能
+* [ ] Feed 流
+* [ ] 秒杀系统
+* [ ] 分布式锁
+* [ ] Redisson
+* [ ] Lua 脚本
+* [ ] Stream 消息队列
+* [ ] 用户签到
+* [ ] UV 统计
+
+---
 
 ## 🤝 贡献
 
-欢迎提交 Issue 或 Pull Request 来改进本项目。
+欢迎提交 **Issue** 或 **Pull Request** 来完善本项目。
 
-## 📄 许可证
+如果这个项目对你有所帮助，欢迎点一个 ⭐ Star！
 
-[MIT License](LICENSE)
+---
+
+## 📄 License
+
+本项目基于 **MIT License** 开源。
